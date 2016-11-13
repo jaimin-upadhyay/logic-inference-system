@@ -3,7 +3,7 @@ project(Jaimin___CSCI_561_Homework_3_Solution)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cc)
 add_executable(Jaimin___CSCI_561_Homework_3_Solution ${SOURCE_FILES})
 
 include_directories(src)

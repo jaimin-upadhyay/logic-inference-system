@@ -7,9 +7,11 @@
 
 #include <iostream>
 
-#define IS_DEBUG true
+// Used to toggle debugging output to cout stream
+const bool kDEBUG = true;
 
-void setDebugMode(const bool debug) {
+// Toggles the debugging output to cout stream based on the parameter value
+void SetDebugMode(const bool debug) {
     if (debug) {
         std::cout.clear();
     } else {
@@ -18,9 +20,9 @@ void setDebugMode(const bool debug) {
 }
 
 int main() {
-    const char *infn = "input.txt";
-    const char *outfn = "output.txt";
-    setDebugMode(IS_DEBUG);
+    const char *input_file_name = "input.txt";
+    const char *output_file_name = "output.txt";
+    SetDebugMode(kDEBUG);
     std::cout << "Hello World!\n";
     return 0;
 }

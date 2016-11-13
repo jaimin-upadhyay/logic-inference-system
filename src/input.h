@@ -1,6 +1,8 @@
 //
 // Created by Jaimin Upadhyay on 11/12/2016.
 //
+// Implements class to handle input for the logic inference system
+//
 
 #ifndef HOMEWORK3_SRC_INPUT_H
 #define HOMEWORK3_SRC_INPUT_H
@@ -9,26 +11,38 @@
 #include <vector>
 #include <fstream>
 
-//Handles input for the logic inference system based on given project specifications
+// Handles input for the logic inference system based on following specification:
+// <NQ = NUMBER OF QUERIES>
+// <QUERY 1>
+// …
+// <QUERY NQ>
+// <NS = NUMBER OF GIVEN SENTENCES IN THE KNOWLEDGE BASE>
+// <SENTENCE 1>
+// …
+// <SENTENCE NS>
 class Input {
-    std::vector<std::string> queries;
-    std::vector<std::string> knowledgeBase;
+    std::vector<std::string> queries_;
+    std::vector<std::string> knowledge_base_;
 
-    //Create a vector of queries from an input stream
-    void readQueries(std::ifstream &inputStream, std::vector<std::string> &queries);
+    //Reads the given Updates the given vector of queries  an input stream
+    void ReadQueries(std::ifstream &input_stream, std::vector<std::string> *queries);
 
     //Create a knowledge base from an input stream
-    void readKnowledgeBase(std::ifstream &inputStream, std::vector<std::string> &knowledgeBase);
+    void ReadKnowledgeBase(std::ifstream &input_stream, std::vector<std::string> *knowledge_base);
 
 public:
-    void readFrom(const std::string inputFileName);
 
-    std::vector<std::string> getQueries() {
-        return queries;
+    //Reads input from given file name
+    void ReadFrom(const std::string input_file_name);
+
+    //Accessor for queries_
+    std::vector<std::string> get_queries() {
+        return queries_;
     }
 
-    std::vector<std::string> getKnowledgeBase() {
-        return knowledgeBase;
+    //Accessor for knowledge base
+    std::vector<std::string> get_knowledge_base() {
+        return knowledge_base_;
     }
 };
 
