@@ -1,6 +1,8 @@
 //
 // Created by Jaimin Upadhyay on 11/13/2016.
 //
+// Implements overloaded stream input function for ease of output
+//
 
 #ifndef HOMEWORK_3_SRC_OUTPUT_H
 #define HOMEWORK_3_SRC_OUTPUT_H

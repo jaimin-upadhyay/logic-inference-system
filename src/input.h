@@ -1,7 +1,7 @@
 //
 // Created by Jaimin Upadhyay on 11/12/2016.
 //
-// Implements class to handle input for the logic inference system
+// Defines a class to handle input for the logic inference system
 //
 
 #ifndef HOMEWORK3_SRC_INPUT_H
