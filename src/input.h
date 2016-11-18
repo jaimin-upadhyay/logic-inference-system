@@ -21,19 +21,8 @@
 // …
 // <SENTENCE NS>
 class Input {
-  std::vector<std::string> queries_;
-  std::vector<std::string> knowledge_base_;
-
-  //Reads the given Updates the given vector of queries  an input stream
-  void
-  ReadQueries(std::ifstream &input_stream, std::vector<std::string> *queries);
-
-  //Create a knowledge base from an input stream
-  void ReadKnowledgeBase(std::ifstream &input_stream,
-                         std::vector<std::string> *knowledge_base);
 
 public:
-
   //Reads input from given file name
   void ReadFrom(const std::string input_file_name);
 
@@ -46,6 +35,18 @@ public:
   std::vector<std::string> get_knowledge_base() {
     return knowledge_base_;
   }
+
+protected:
+  //Reads the given Updates the given vector of queries  an input stream
+  void
+  ReadQueries(std::ifstream &input_stream, std::vector<std::string> *queries);
+
+  //Create a knowledge base from an input stream
+  void ReadKnowledgeBase(std::ifstream &input_stream,
+                         std::vector<std::string> *knowledge_base);
+
+  std::vector<std::string> queries_;
+  std::vector<std::string> knowledge_base_;
 };
 
 #endif //HOMEWORK3_SRC_INPUT_H

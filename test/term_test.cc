@@ -7,15 +7,6 @@
 #include "term.h"
 #include "gtest/gtest.h"
 
-TEST(TermTest, DefineValid) {
-  std::string test_term_names[] = {"x", "Xyz"};
-  for (std::string test_literal_name:test_term_names) {
-    ASSERT_NO_THROW(Term test_literal(test_literal_name));
-    Term test_literal(test_literal_name);
-    EXPECT_EQ(test_literal_name, test_literal.get_name());
-  }
-}
-
 TEST(ConstantTest, DefineValid) {
   std::string test_constant_names[] = {"Xyz", "James", "HarryPotter"};
 
@@ -55,8 +46,7 @@ TEST(VariableTest, DefineValidAssigned) {
     Variable test_variable(test_variable_name, &test_value);
     EXPECT_EQ(test_variable_name, test_variable.get_name());
     ASSERT_EQ(true, test_variable.is_assigned());
-    EXPECT_EQ(&test_value, test_variable.get_value());
-    EXPECT_EQ(test_value.get_name(), test_variable.get_value()->get_name());
+    EXPECT_EQ(test_value.get_name(), test_variable.get_value());
   }
 }
 
