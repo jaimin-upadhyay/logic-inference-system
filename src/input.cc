@@ -4,13 +4,10 @@
 
 #include "input.h"
 
-#include <limits>
-
 // Reads the given input stream for the number of queries to expect
 // then stores all the expected number of queries from the following lines in
 // the input stream
-void Input::ReadQueries(std::ifstream &input_stream,
-                        std::vector<std::string> *queries) {
+void Input::ReadQueries(std::ifstream &input_stream) {
   int no_of_queries = 0;
   input_stream >> no_of_queries;
   // Ignore remaining characters in the line after the number of queries to
@@ -19,15 +16,14 @@ void Input::ReadQueries(std::ifstream &input_stream,
   std::string temp_string;
   for (int i = 0; i < no_of_queries; i++) {
     std::getline(input_stream, temp_string);
-    queries->push_back(temp_string);
+    queries_.push_back(Query(temp_string));
   }
 }
 
 // Reads the given input stream for the number of sentences to expect
 // then stores all the expected number of sentences from the following lines
 // in the input stream to the knowledge base
-void Input::ReadKnowledgeBase(std::ifstream &input_stream,
-                              std::vector<std::string> *knowledge_base) {
+void Input::ReadKnowledgeBase(std::ifstream &input_stream) {
   int no_of_sentences = 0;
   input_stream >> no_of_sentences;
   // Ignore remaining characters in the line after the value of number of
@@ -36,7 +32,7 @@ void Input::ReadKnowledgeBase(std::ifstream &input_stream,
   std::string temp_string;
   for (int i = 0; i < no_of_sentences; i++) {
     std::getline(input_stream, temp_string);
-    knowledge_base->push_back(temp_string);
+    knowledge_base_.push_back(temp_string);
   }
 }
 
@@ -50,8 +46,8 @@ void Input::ReadFrom(const std::string input_file_name) {
     std::cerr << "Opening of input file failed...\n";
     throw std::invalid_argument("Input file couldn't be opened");
   } else {
-    ReadQueries(input_stream, &queries_);
-    ReadKnowledgeBase(input_stream, &knowledge_base_);
+    ReadQueries(input_stream);
+    ReadKnowledgeBase(input_stream);
     input_stream.close();
   }
 }

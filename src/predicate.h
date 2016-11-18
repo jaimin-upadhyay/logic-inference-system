@@ -24,6 +24,8 @@ public:
     set_arguments(arguments);
   }
 
+  std::string to_string() const;
+
   const std::string &get_name() const {
     return name_;
   }

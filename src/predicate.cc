@@ -37,6 +37,16 @@ Predicate::Predicate(const std::string &input_string) {
   }
 }
 
+std::string Predicate::to_string() const {
+  std::ostringstream predicate_string_stream;
+  predicate_string_stream << Predicate::name_ << "(" << Predicate::arguments_.front().to_string();
+  for (int i = 1; i < Predicate::arguments_.size(); i++) {
+    predicate_string_stream << "," << Predicate::arguments_[i].to_string();
+  }
+  predicate_string_stream << ")";
+  return predicate_string_stream.str();
+}
+
 // Validates the name of the predicate to be a case-sensitive alphabetical string that begins with an uppercase letter
 void Predicate::set_name(const std::string &name) {
   if (std::regex_match(name, std::regex("[A-Z][a-zA-Z]*"))) {

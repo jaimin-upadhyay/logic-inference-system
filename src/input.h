@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include "query.h"
 
 // Handles input for the logic inference system based on following specification:
 // <NQ = NUMBER OF QUERIES>
@@ -26,8 +27,8 @@ public:
   //Reads input from given file name
   void ReadFrom(const std::string input_file_name);
 
-  //Accessor for queries_
-  std::vector<std::string> get_queries() {
+  //Accessor for queries
+  std::vector<Query> get_queries() {
     return queries_;
   }
 
@@ -39,13 +40,12 @@ public:
 protected:
   //Reads the given Updates the given vector of queries  an input stream
   void
-  ReadQueries(std::ifstream &input_stream, std::vector<std::string> *queries);
+  ReadQueries(std::ifstream &input_stream);
 
   //Create a knowledge base from an input stream
-  void ReadKnowledgeBase(std::ifstream &input_stream,
-                         std::vector<std::string> *knowledge_base);
+  void ReadKnowledgeBase(std::ifstream &input_stream);
 
-  std::vector<std::string> queries_;
+  std::vector<Query> queries_;
   std::vector<std::string> knowledge_base_;
 };
 

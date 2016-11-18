@@ -35,12 +35,12 @@ protected:
 TEST_F(InputTest, ReadInput) {
   Input input;
   input.ReadFrom(input_file_name_);
-  std::vector<std::string> queries = input.get_queries();
+  std::vector<Query> queries = input.get_queries();
   std::vector<std::string> kb = input.get_knowledge_base();
 
   ASSERT_EQ(expected_queries_.size(), queries.size());
   for (int i = 0; i < queries.size(); i++) {
-    EXPECT_EQ(expected_queries_[i], queries[i]) << "\t\ti: " << i;
+    EXPECT_EQ(expected_queries_[i], queries[i].to_string()) << "\t\ti: " << i;
   }
 
   ASSERT_EQ(expected_knowledge_base_.size(), kb.size());

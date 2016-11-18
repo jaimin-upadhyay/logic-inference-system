@@ -12,6 +12,10 @@
 // Describes the terms of the logic sentences
 class Term {
 public:
+  std::string to_string() const {
+    return name_;
+  }
+
   const std::string &get_name() const {
     return name_;
   }
