@@ -8,17 +8,17 @@
 #include <iostream>
 #include "predicate.h"
 
-class Query {
+class Literal {
 public:
   // Creates a query from the input string
   // Note: Initialization of the constructor initializer list is based on the member's declaration order
-  Query(const std::string &input_string) : negation(input_string[0] == '~'),
-                                           predicate(negation ? input_string.substr(1) : input_string) {
+  Literal(const std::string &input_string) : negation(input_string[0] == '~'),
+                                             predicate(negation ? input_string.substr(1) : input_string) {
   }
 
-  Query(bool negation, const Predicate &predicate) : negation(negation), predicate(predicate) {}
+  Literal(bool negation, const Predicate &predicate) : negation(negation), predicate(predicate) {}
 
-  std::string to_string() {
+  std::string to_string() const {
     return (negation ? "~" : "") + predicate.to_string();
   }
 
@@ -27,7 +27,7 @@ public:
   }
 
   void set_negation(bool negation) {
-    Query::negation = negation;
+    Literal::negation = negation;
   }
 
   const Predicate &get_predicate() const {
@@ -35,19 +35,23 @@ public:
   }
 
   void set_predicate(const Predicate &predicate) {
-    Query::predicate = predicate;
+    Literal::predicate = predicate;
   }
 
-  bool operator==(const Query &rhs) const {
+  friend std::ostream &operator<<(std::ostream &os, const Literal &query) {
+    return os << query.to_string();
+  }
+
+  bool operator==(const Literal &rhs) const {
     return negation == rhs.negation &&
            predicate == rhs.predicate;
   }
 
-  bool operator!=(const Query &rhs) const {
+  bool operator!=(const Literal &rhs) const {
     return !(rhs == *this);
   }
 
-  bool operator<(const Query &rhs) const {
+  bool operator<(const Literal &rhs) const {
     if (negation < rhs.negation)
       return true;
     if (rhs.negation < negation)
@@ -55,15 +59,15 @@ public:
     return predicate < rhs.predicate;
   }
 
-  bool operator>(const Query &rhs) const {
+  bool operator>(const Literal &rhs) const {
     return rhs < *this;
   }
 
-  bool operator<=(const Query &rhs) const {
+  bool operator<=(const Literal &rhs) const {
     return !(rhs < *this);
   }
 
-  bool operator>=(const Query &rhs) const {
+  bool operator>=(const Literal &rhs) const {
     return !(*this < rhs);
   }
 

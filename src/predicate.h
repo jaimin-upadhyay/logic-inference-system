@@ -24,6 +24,8 @@ public:
     set_arguments(arguments);
   }
 
+  void AddArgument(std::string input_string);
+
   std::string to_string() const;
 
   const std::string &get_name() const {
@@ -37,6 +39,11 @@ public:
   }
 
   void set_arguments(const std::vector<Term> &arguments);
+
+  friend std::ostream &operator<<(std::ostream &os, const Predicate &predicate) {
+    os << predicate.to_string();
+    return os;
+  }
 
   bool operator==(const Predicate &rhs) const {
     return name_ == rhs.name_ &&
@@ -66,8 +73,6 @@ public:
   bool operator>=(const Predicate &rhs) const {
     return !(*this < rhs);
   }
-
-  void AddArgument(std::string input_string);
 
 protected:
   std::string name_;

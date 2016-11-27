@@ -5,7 +5,7 @@
 #include "predicate.h"
 
 // Regex used to validate the predicate structure
-const char Predicate::kRegex[] = "([A-Z][a-zA-Z]*)\\((.+)*\\)";
+const char Predicate::kRegex[] = "([A-Z][a-zA-Z]*)\\(([a-zA-Z,]+)*\\)";
 
 // Initializes a predicate from an input string of the form:
 // Predicate(<arg 1>[, <arg 2>, <arg 3> ... <arg n>)
@@ -37,6 +37,18 @@ Predicate::Predicate(const std::string &input_string) {
   }
 }
 
+// Adds a input string to the arguments if it is a valid term i.e. a variable or a constant
+void Predicate::AddArgument(std::string input_string) {
+  Term *new_argument = nullptr;
+  try {
+    new_argument = new Variable(input_string);
+  } catch (std::invalid_argument) {
+    new_argument = new Constant(input_string);
+  }
+  arguments_.push_back(*new_argument);
+  delete new_argument;
+}
+
 std::string Predicate::to_string() const {
   std::ostringstream predicate_string_stream;
   predicate_string_stream << Predicate::name_ << "(" << Predicate::arguments_.front().to_string();
@@ -64,16 +76,4 @@ void Predicate::set_arguments(const std::vector<Term> &arguments) {
   } else {
     throw std::invalid_argument("Predicate should have at least one argument");
   }
-}
-
-// Adds a input string to the arguments if it is a valid term i.e. a variable or a constant
-void Predicate::AddArgument(std::string input_string) {
-  Term *new_argument = nullptr;
-  try {
-    new_argument = new Variable(input_string);
-  } catch (std::invalid_argument) {
-    new_argument = new Constant(input_string);
-  }
-  arguments_.push_back(*new_argument);
-  delete new_argument;
 }

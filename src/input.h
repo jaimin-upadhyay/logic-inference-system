@@ -10,7 +10,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include "query.h"
+#include "literal.h"
+#include "knowledge_base.h"
 
 // Handles input for the logic inference system based on following specification:
 // <NQ = NUMBER OF QUERIES>
@@ -24,16 +25,14 @@
 class Input {
 
 public:
-  //Reads input from given file name
+  // Reads input from given file name
   void ReadFrom(const std::string input_file_name);
 
-  //Accessor for queries
-  std::vector<Query> get_queries() {
+  std::vector<Literal> get_queries() {
     return queries_;
   }
 
-  //Accessor for knowledge base
-  std::vector<std::string> get_knowledge_base() {
+  KnowledgeBase get_knowledge_base() {
     return knowledge_base_;
   }
 
@@ -45,8 +44,8 @@ protected:
   //Create a knowledge base from an input stream
   void ReadKnowledgeBase(std::ifstream &input_stream);
 
-  std::vector<Query> queries_;
-  std::vector<std::string> knowledge_base_;
+  std::vector<Literal> queries_;
+  KnowledgeBase knowledge_base_;
 };
 
 #endif //HOMEWORK3_SRC_INPUT_H

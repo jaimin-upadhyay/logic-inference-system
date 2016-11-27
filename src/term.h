@@ -32,6 +32,11 @@ public:
     }
   }
 
+  friend std::ostream &operator<<(std::ostream &os, const Term &term) {
+    os << term.to_string();
+    return os;
+  }
+
   bool operator==(const Term &rhs) const {
     return name_ == rhs.name_;
   }
@@ -87,18 +92,18 @@ public:
                                                        value_(value) {
   }
 
+  // Returns true when no constant has been assigned to the variable
+  // i.e. when the pointer to constant is equal to nullptr.
+  bool is_assigned() {
+    return value_ != nullptr;
+  }
+
   std::string get_value() const {
     return value_ ? value_->get_name() : name_;
   }
 
   void set_value(Constant *value) {
     Variable::value_ = value;
-  }
-
-  // Returns true when no constant has been assigned to the variable
-  // i.e. when the pointer to constant is equal to nullptr.
-  bool is_assigned() {
-    return value_ != nullptr;
   }
 
   bool operator==(const Variable &rhs) const {

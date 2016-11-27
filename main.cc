@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include "input.h"
-#include "output.h"
 
 // Used to toggle debugging output to cout stream
 const bool kDEBUG = true;
@@ -25,9 +24,13 @@ int main() {
   const std::string input_file_name = "input.txt";
   const std::string output_file_name = "output.txt";
   SetDebugMode(kDEBUG);
-  Input input;
-  input.ReadFrom(input_file_name);
-  std::cout << "Queries: " << input.get_queries() << "\n";
-  std::cout << "Knowledge Base:" << input.get_knowledge_base() << "\n";
+  try {
+    Input input;
+    input.ReadFrom(input_file_name);
+    std::cout << "Queries: " << input.get_queries() << "\n";
+    std::cout << "Knowledge Base:" << input.get_knowledge_base() << "\n";
+  } catch (std::invalid_argument invalid_file_name) {
+    std::cout << "Input file couldn't be accessed.";
+  }
   return 0;
 }

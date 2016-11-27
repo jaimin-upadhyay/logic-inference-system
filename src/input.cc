@@ -13,10 +13,12 @@ void Input::ReadQueries(std::ifstream &input_stream) {
   // Ignore remaining characters in the line after the number of queries to
   // avoid confusion in following stream reads
   input_stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  std::string temp_string;
+  std::string read_line;
   for (int i = 0; i < no_of_queries; i++) {
-    std::getline(input_stream, temp_string);
-    queries_.push_back(Query(temp_string));
+    std::getline(input_stream, read_line);
+    // Trimming the read line of any spaces
+    read_line.erase(std::remove(read_line.begin(), read_line.end(), ' ') - read_line.begin());
+    queries_.push_back(Literal(read_line));
   }
 }
 
@@ -29,10 +31,12 @@ void Input::ReadKnowledgeBase(std::ifstream &input_stream) {
   // Ignore remaining characters in the line after the value of number of
   // sentences to avoid confusion in following stream reads
   input_stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  std::string temp_string;
+  std::string read_line;
   for (int i = 0; i < no_of_sentences; i++) {
-    std::getline(input_stream, temp_string);
-    knowledge_base_.push_back(temp_string);
+    std::getline(input_stream, read_line);
+    // Trimming the read line of any spaces
+    read_line.erase(std::remove(read_line.begin(), read_line.end(), ' ') - read_line.begin());
+    knowledge_base_.AddSentence(read_line);
   }
 }
 
@@ -43,7 +47,6 @@ void Input::ReadKnowledgeBase(std::ifstream &input_stream) {
 void Input::ReadFrom(const std::string input_file_name) {
   std::ifstream input_stream(input_file_name);
   if (!input_stream.is_open()) {
-    std::cerr << "Opening of input file failed...\n";
     throw std::invalid_argument("Input file couldn't be opened");
   } else {
     ReadQueries(input_stream);
