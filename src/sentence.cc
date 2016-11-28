@@ -6,184 +6,158 @@
 #include <vector>
 #include "sentence.h"
 
+// Symbols are stored in indexes equal to their precedence.
+// Even though parenthesis are stored with other operators, they are treated
+// as special marker symbols to keep track of expression precedence.
+const char Sentence::kSymbol[] = {'(', '=', '>', '|', '&', '~', ')'};
+const unsigned int Sentence::kNumberOfSymbols = 7,
+    Sentence::kOpeningParenthesisIndex = 0, Sentence::kImpliesFirstIndex = 1,
+    Sentence::kImpliesSecondIndex = 2, Sentence::kOrIndex = 3,
+    Sentence::kAndIndex = 4, Sentence::kNotIndex = 5,
+    Sentence::kClosingParenthesisIndex = 6;
+
 // Parses an input string to create a valid Sentence object.
-// Parsing is done using a parsing table created from the following grammar:
-//    S →	BA
-//    A →	=>BA | ε
-//    B →	DC
-//    C →	vDC | ε
-//    D → FE
-//    E → ^FE | ε
-//    F →	~G | G
-//    G →	(S) | x
-// where x is a predicate, v is OR, ^ is AND, ~ is NOT and => is IMPLICATION.
-// Website used for grammar transformation and table generation: http://smlweb.cpsc.ucalgary.ca/
+// Parsing is done using Edsger Dijkstra's Shunting Yard algorithm based on
+// following references.
+// Article describing recursive descent expression parsing methods:
+//  http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#shunting_yard
+// Article describing Shunting Yard algorithm:
+//  http://www.oxfordmathcenter.com/drupal7/node/628
 Sentence Sentence::ParseSentence(const std::string &input_string) {
-  std::invalid_argument invalid_sentence_exception("Invalid sentence: " + input_string);
-  // Symbols are stored in indexes equal to their column's index in the parsing table
-  // '$' is used as a symbol for input end and 'x' is used as a symbol for predicates
-  std::vector<char> symbol_table = {'$', 'x', ')', '(', '~', '&', '|', '=', '>'};
-  const char kStartNonTerminal = '0';
-  const unsigned int kInputEndSymbolIndex = 0, kPredicateSymbolIndex = 1, kClosingParenthesisSymbolIndex = 2, kOpeningParenthesisSymbolIndex = 3, kNotSymbolIndex = 4, kAndSymbolIndex = 5, kOrSymbolIndex = 6, kImplicationFirstHalfSymbolIndex = 7, kImplicationSecondHalfSymbolIndex = 8;
-  // Digits denote the non-terminal symbols, "." denote an erroneous states and empty strings denote Epsilon states.
-  std::vector<std::vector<std::string>> parsing_table = {{".", "21", ".", "21",  "21", ".",   ".",   ".",    "."},
-                                                         {"",  ".",  "",  ".",   ".",  ".",   ".",   "=>21", "."},
-                                                         {".", "43", ".", "43",  "43", ".",   ".",   ".",    "."},
-                                                         {"",  ".",  "",  ".",   ".",  ".",   "|43", "",     "."},
-                                                         {".", "65", ".", "65",  "65", ".",   ".",   ".",    "."},
-                                                         {"",  ".",  "",  ".",   ".",  "&65", "",    "",     "."},
-                                                         {".", "7",  ".", "7",   "~7", ".",   ".",   ".",    "."},
-                                                         {".", "x",  ".", "(0)", ".",  ".",   ".",   ".",    "."}};
-  std::vector<char> parsing_stack;
-  std::vector<Predicate> predicates;
-  std::vector<char> operators;
-  std::vector<Node *> temp_roots;
-  parsing_stack.push_back(kStartNonTerminal);
-  std::string::const_iterator input_string_iterator = input_string.begin();
+  std::invalid_argument invalid_sentence_exception("Invalid sentence: " +
+                                                   input_string);
+
+  std::map<char, int> symbol_precedence;
+  for (int i = 0; i < kNumberOfSymbols; i++) {
+    symbol_precedence[kSymbol[i]] = i;
+  }
+
   std::regex predicate_regex(Predicate::kRegex);
-  std::smatch predicate_regex_match;
-  while (!parsing_stack.empty()) {
-    unsigned int column_index = 0, row_index = 0;
-    if (input_string_iterator == input_string.end()) {
-      column_index = kInputEndSymbolIndex;
-    } else if (isupper(*input_string_iterator)) {
-      // If next input character is a upper case letter then expect a predicate
-      column_index = kPredicateSymbolIndex;
-    } else if (isspace(*input_string_iterator)) {
-      // Ignore spaces in the input
+
+  std::vector<Node *> operand_stack;
+  std::vector<char> operator_stack;
+
+  std::string::const_iterator input_string_iterator = input_string.begin();
+  while (input_string_iterator != input_string.end()) {
+    // Ignore spaces in the input
+    if (isspace(*input_string_iterator)) {
       input_string_iterator++;
-      continue;
     } else {
-      unsigned int symbol_index;
-      for (symbol_index = 0; symbol_index < symbol_table.size(); symbol_index++) {
-        if (*input_string_iterator == symbol_table[symbol_index]) {
-          column_index = symbol_index;
-          break;
-        }
-      }
-      if (symbol_index >= symbol_table.size()) {
-        std::string invalid_char_message = "Invalid character \'";
-        invalid_char_message.push_back(*input_string_iterator);
-        invalid_char_message += "\' found in sentence \'" + input_string + "\'.";
-        throw std::invalid_argument(invalid_char_message);
-      }
-    }
-    if (isdigit(parsing_stack.back())) {
-      row_index = parsing_stack.back() - '0';
-      parsing_stack.pop_back();
-      if (parsing_table[row_index][column_index] == ".") {
-        throw invalid_sentence_exception;
-      } else {
-        if (parsing_table[row_index][column_index].empty()) {
-          bool negate = false;
-          while (!operators.empty() && !predicates.empty()) {
-            if (operators.back() == symbol_table[kNotSymbolIndex]) {
-              negate = true;
-              operators.pop_back();
-            } else {
-              PredicateNode *operator_rvalue = new PredicateNode(predicates.back(), negate);
-              negate = false;
-              predicates.pop_back();
-              Node *operator_lvalue;
-              if (predicates.empty()) {
-                if (!temp_roots.empty()) {
-                  operator_lvalue = temp_roots.back();
-                  temp_roots.pop_back();
-                } else {
-                  throw invalid_sentence_exception;
-                }
-              } else {
-                operator_lvalue = new PredicateNode(predicates.back());
-                predicates.pop_back();
-              }
-              char new_operator = operators.back();
-              operators.pop_back();
-              if (new_operator == symbol_table[kImplicationSecondHalfSymbolIndex]) {
-                new_operator = symbol_table[kOrSymbolIndex];
-                operator_lvalue->negate();
-              }
-              Node *new_operator_node = new OperatorNode(new_operator, operator_lvalue, operator_rvalue);
-              temp_roots.push_back(new_operator_node);
-            }
+      std::map<char, int>::iterator symbol_match = symbol_precedence.find(
+          *input_string_iterator);
+      if (symbol_match != symbol_precedence.end()) {
+        if (*input_string_iterator == kSymbol[kClosingParenthesisIndex]) {
+          while (!operator_stack.empty() && operator_stack.back() !=
+                                            kSymbol[kOpeningParenthesisIndex]) {
+            Sentence::ConsumeOperator(operator_stack, operand_stack,
+                                      invalid_sentence_exception);
           }
-          while (!predicates.empty()) {
-            if (temp_roots.empty()) {
-              temp_roots.push_back(new PredicateNode(predicates.back(), negate));
-              negate = false;
-              predicates.pop_back();
-            } else {
-              throw invalid_sentence_exception;
-            }
+          if (operator_stack.empty()) {
+            throw invalid_sentence_exception;
+          } else {
+            operator_stack.pop_back();
+            input_string_iterator++;
           }
-          while (!operators.empty()) {
-            if (!temp_roots.empty()) {
-              if (operators.back() == symbol_table[kNotSymbolIndex]) {
-                negate = true;
-                operators.pop_back();
-              } else {
-                Node *operator_rvalue = temp_roots.back();
-                temp_roots.pop_back();
-                if (negate) {
-                  operator_rvalue->negate();
-                }
-                negate = false;
-                Node *operator_lvalue;
-                if (!temp_roots.empty()) {
-                  operator_lvalue = temp_roots.back();
-                  temp_roots.pop_back();
-                } else {
-                  throw invalid_sentence_exception;
-                }
-                char new_operator = operators.back();
-                operators.pop_back();
-                if (new_operator == symbol_table[kImplicationSecondHalfSymbolIndex]) {
-                  new_operator = symbol_table[kOrSymbolIndex];
-                  operator_lvalue->negate();
-                }
-                Node *new_operator_node = new OperatorNode(new_operator, operator_lvalue, operator_rvalue);
-                temp_roots.push_back(new_operator_node);
-              }
-            } else {
-              throw invalid_sentence_exception;
-            }
-          }
-          if (negate) {
-            temp_roots.back()->negate();
-            negate = false;
-          }
+        } else if (operator_stack.empty() ||
+                   *input_string_iterator ==
+                   kSymbol[kOpeningParenthesisIndex] ||
+                   symbol_precedence[*input_string_iterator] >=
+                   symbol_precedence[operator_stack.back()]) {
+          operator_stack.push_back(*input_string_iterator);
+          input_string_iterator++;
         } else {
-          for (int i = parsing_table[row_index][column_index].size() - 1; i > -1; i--) {
-            parsing_stack.push_back(parsing_table[row_index][column_index][i]);
-          }
+          Sentence::ConsumeOperator(operator_stack, operand_stack,
+                                    invalid_sentence_exception);
         }
-      }
-    } else {
-      if (parsing_stack.back() == *input_string_iterator) {
-        parsing_stack.pop_back();
-        if (*input_string_iterator != symbol_table[kImplicationFirstHalfSymbolIndex] &&
-            *input_string_iterator != symbol_table[kOpeningParenthesisSymbolIndex] &&
-            *input_string_iterator != symbol_table[kClosingParenthesisSymbolIndex]) {
-          operators.push_back(*input_string_iterator);
-        }
-        input_string_iterator++;
-      } else if (parsing_stack.back() == symbol_table[kPredicateSymbolIndex] &&
-                 std::regex_search(input_string_iterator, input_string.end(), predicate_regex_match,
-                                   predicate_regex) && predicate_regex_match.position(0) == 0) {
-        // If a predicate is expected, check if it exists and occurs next in the input
-        parsing_stack.pop_back();
-        Predicate new_predicate(predicate_regex_match[0]);
-        predicates.push_back(new_predicate);
-        input_string_iterator += predicate_regex_match.length(0);
       } else {
-        throw invalid_sentence_exception;
+        // Search for first instance of a predicate and check if it starts
+        // from current input pointer.
+        std::smatch predicate_regex_match;
+        if (std::regex_search(input_string_iterator, input_string.end(),
+                              predicate_regex_match,
+                              predicate_regex) &&
+            predicate_regex_match.position(0) == 0) {
+          Predicate new_predicate(predicate_regex_match[0]);
+          operand_stack.push_back(new PredicateNode(new_predicate));
+          input_string_iterator += predicate_regex_match.length(0);
+        } else {
+          std::ostringstream invalid_char_message;
+          invalid_char_message << "Invalid character \'"
+                               << *input_string_iterator
+                               << "\' found in sentence \'"
+                               << input_string
+                               << "\'.";
+          throw std::invalid_argument(invalid_char_message.str());
+        }
       }
     }
   }
-  // Sentence is valid if the stack is empty and there is no input left.
-  if (input_string_iterator != input_string.end()) {
+  // Create a sentence object after consuming all the operators in operator
+  // stack.
+  while (!operator_stack.empty()) {
+    ConsumeOperator(operator_stack, operand_stack, invalid_sentence_exception);
+  }
+  Node *sentence_root = nullptr;
+  if (operand_stack.size() == 1) {
+    sentence_root = operand_stack.back();
+    operand_stack.pop_back();
+  } else {
     throw invalid_sentence_exception;
   }
-  Sentence new_sentence = Sentence(temp_roots[0]);
-  temp_roots.clear();
+  Sentence new_sentence(sentence_root);
   return new_sentence;
+}
+
+template<typename T>
+T Sentence::PopAndGet(std::vector<T> &stack,
+                      std::invalid_argument fail_exception) {
+  if (stack.empty()) {
+    throw fail_exception;
+  } else {
+    T top = stack.back();
+    stack.pop_back();
+    return top;
+  }
+}
+
+// Consumes the top operator from the given operator stack using the given
+// operand stack. Throws specified fail exception when an error is encountered.
+void Sentence::ConsumeOperator(std::vector<char> &operator_stack,
+                               std::vector<Node *> &operand_stack,
+                               std::invalid_argument fail_exception) {
+  char new_operator = Sentence::PopAndGet(operator_stack,
+                                          fail_exception);
+  if (new_operator == kSymbol[kNotIndex]) {
+    // Negate the top on operand stack.
+    Node *operand = Sentence::PopAndGet(operand_stack,
+                                        fail_exception);
+    operand->negate();
+    operand_stack.push_back(operand);
+  } else if (new_operator == kSymbol[kImpliesSecondIndex]) {
+    char next_operator = Sentence::PopAndGet(operator_stack,
+                                             fail_exception);
+    // Throwing an exception when implication second half is not preceded by implication first half.
+    if (next_operator != kSymbol[kImpliesFirstIndex]) {
+      throw fail_exception;
+    } else {
+      // Add implication to the sentence after converting it to disjunction using the following rule:
+      //  P=>Q <=> ~P|Q
+      new_operator = kSymbol[kOrIndex];
+      Node *right_operand = Sentence::PopAndGet(operand_stack,
+                                                fail_exception);
+      Node *left_operand = Sentence::PopAndGet(operand_stack,
+                                               fail_exception);
+      left_operand->negate();
+      operand_stack.push_back(
+          new OperatorNode(new_operator, left_operand, right_operand));
+    }
+  } else if (new_operator == kSymbol[kOrIndex] ||
+             new_operator == kSymbol[kAndIndex]) {
+    Node *right_operand = Sentence::PopAndGet(operand_stack, fail_exception);
+    Node *left_operand = Sentence::PopAndGet(operand_stack, fail_exception);
+    operand_stack.push_back(
+        new OperatorNode(new_operator, left_operand, right_operand));
+  } else {
+    throw fail_exception;
+  }
 }
