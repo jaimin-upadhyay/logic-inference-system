@@ -8,7 +8,7 @@
 const char Predicate::kRegex[] = "([A-Z][a-zA-Z]*)\\(([a-zA-Z,]+)*\\)";
 
 // Initializes a predicate from an input string of the form:
-// Predicate(<arg 1>[, <arg 2>, <arg 3> ... <arg n>)
+//  Predicate(<arg 1>[, <arg 2>, <arg 3> ... <arg n>)
 // Throws an invalid_argument exception if the predicate is not a case-sensitive alphabetical string that begins with an uppercase letter
 Predicate::Predicate(const std::string &input_string) {
   std::invalid_argument invalid_input_string_exception(

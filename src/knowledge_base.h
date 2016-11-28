@@ -14,7 +14,7 @@
 class KnowledgeBase {
 public:
   void AddSentence(std::string input_string) {
-    Sentence new_sentence = Sentence::ParseSentence(input_string);
+    Sentence new_sentence = Sentence(input_string);
     return sentences_.push_back(new_sentence);
   }
 

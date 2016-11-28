@@ -25,8 +25,9 @@
 class Input {
 
 public:
-  // Reads input from given file name
-  void ReadFrom(const std::string input_file_name);
+  Input(const std::string input_file_name) {
+    ReadFromFile(input_file_name);
+  }
 
   std::vector<Literal> get_queries() {
     return queries_;
@@ -37,12 +38,21 @@ public:
   }
 
 protected:
-  //Reads the given Updates the given vector of queries  an input stream
-  void
-  ReadQueries(std::ifstream &input_stream);
+  void ReadFromFile(const std::string file_name);
 
-  //Create a knowledge base from an input stream
+  void ReadQueries(std::ifstream &input_stream);
+
   void ReadKnowledgeBase(std::ifstream &input_stream);
+
+  std::string GetTrimmedLine(std::istream &input_stream) const {
+    std::string read_line;
+    std::getline(input_stream, read_line);
+    // Trimming whitespace from the read line
+    std::string::iterator new_end = std::remove(read_line.begin(),
+                                                read_line.end(), ' ');
+    read_line.erase(new_end - read_line.begin());
+    return read_line;
+  }
 
   std::vector<Literal> queries_;
   KnowledgeBase knowledge_base_;

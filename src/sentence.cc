@@ -2,8 +2,6 @@
 // Created by Jaimin Upadhyay on 11/19/2016.
 //
 
-#include <iostream>
-#include <vector>
 #include "sentence.h"
 
 // Symbols are stored in indexes equal to their precedence.
@@ -16,14 +14,15 @@ const unsigned int Sentence::kNumberOfSymbols = 7,
     Sentence::kAndIndex = 4, Sentence::kNotIndex = 5,
     Sentence::kClosingParenthesisIndex = 6;
 
-// Parses an input string to create a valid Sentence object.
+// Parses an input string to create a valid sentence parse tree and
+// returns the root of the tree.
 // Parsing is done using Edsger Dijkstra's Shunting Yard algorithm based on
-// following references.
+// following references;
 // Article describing recursive descent expression parsing methods:
 //  http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#shunting_yard
 // Article describing Shunting Yard algorithm:
 //  http://www.oxfordmathcenter.com/drupal7/node/628
-Sentence Sentence::ParseSentence(const std::string &input_string) {
+Sentence::Node *Sentence::ParseSentence(const std::string &input_string) {
   std::invalid_argument invalid_sentence_exception("Invalid sentence: " +
                                                    input_string);
 
@@ -97,15 +96,14 @@ Sentence Sentence::ParseSentence(const std::string &input_string) {
   while (!operator_stack.empty()) {
     ConsumeOperator(operator_stack, operand_stack, invalid_sentence_exception);
   }
-  Node *sentence_root = nullptr;
+  Node *parse_tree_root = nullptr;
   if (operand_stack.size() == 1) {
-    sentence_root = operand_stack.back();
+    parse_tree_root = operand_stack.back();
     operand_stack.pop_back();
   } else {
     throw invalid_sentence_exception;
   }
-  Sentence new_sentence(sentence_root);
-  return new_sentence;
+  return parse_tree_root;
 }
 
 template<typename T>

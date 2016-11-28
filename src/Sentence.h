@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <exception>
+
 #include "term.h"
 #include "predicate.h"
 
@@ -22,7 +23,7 @@ public:
 
     Node(Node *left_, Node *right_) : left_(left_), right_(right_) {}
 
-    ~Node() {
+    virtual ~Node() {
       if (left_ != nullptr) {
         delete left_;
         left_ = nullptr;
@@ -244,11 +245,20 @@ public:
 
   Sentence(Node *root) : root_(root) {}
 
-  ~Sentence() {
-    delete root_;
+  Sentence(const std::string &input_string) {
+    root_ = ParseSentence(input_string);
   }
 
-  static Sentence ParseSentence(const std::string &input_string);
+  Sentence(const Sentence &sentence) {
+    root_ = sentence.root_->copy();
+  }
+
+  virtual ~Sentence() {
+    if (root_ != nullptr) {
+      delete root_;
+      root_ = nullptr;
+    }
+  }
 
   std::string to_string() const {
     if (root_ != nullptr) {
@@ -264,19 +274,19 @@ public:
   }
 
 protected:
-  // Stores valid symbols.
-  static const char kSymbol[];
+  static const char kSymbol[]; // Stores valid symbols.
   static const unsigned int kNumberOfSymbols, kOpeningParenthesisIndex, kImpliesFirstIndex, kImpliesSecondIndex, kOrIndex, kAndIndex, kNotIndex, kClosingParenthesisIndex;
-
   Node *root_ = nullptr;
+
+  Node *ParseSentence(const std::string &input_string);
+
+  void ConsumeOperator(std::vector<char> &operator_stack,
+                       std::vector<Node *> &operand_stack,
+                       std::invalid_argument fail_exception);
 
   template<typename T>
   static T
   PopAndGet(std::vector<T> &stack, std::invalid_argument fail_exception);
-
-  static void ConsumeOperator(std::vector<char> &operator_stack,
-                              std::vector<Node *> &operand_stack,
-                              std::invalid_argument fail_exception);
 };
 
 

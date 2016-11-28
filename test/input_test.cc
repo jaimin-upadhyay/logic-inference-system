@@ -7,32 +7,32 @@
 
 class InputTest : public ::testing::Test {
 protected:
-  std::vector<std::string> expected_queries_{"F(Bob)",
-                                             "H(John)",
-                                             "~H(Alice)",
-                                             "~H(John)",
-                                             "G(Bob)",
-                                             "G(Tom)"};
-  std::vector<std::string> expected_knowledge_base_{"A(x)=>H(x)",
-                                                    "D(x,y)=>~H(y)",
-                                                    "B(x,y)^C(x,y)=>A(x)",
-                                                    "B(John,Alice)",
-                                                    "B(John,Bob)",
-                                                    "D(x,y)&Q(y)=>C(x,y)",
-                                                    "D(John,Alice)",
-                                                    "Q(Bob)",
-                                                    "D(John,Bob)",
-                                                    "F(x)=>G(x)",
-                                                    "G(x)=>H(x)",
-                                                    "H(x)=>F(x)",
-                                                    "R(x)=>H(x)",
-                                                    "R(Tom)"};
+  std::vector<std::string> expected_queries_{" F(Bob) ",
+                                             " H(John) ",
+                                             " ~H(Alice) ",
+                                             " ~H(John) ",
+                                             " G(Bob) ",
+                                             " G(Tom) "};
+
+  std::vector<std::string> expected_knowledge_base_{" ( ~A(x) | H(x) ) ",
+                                                    " ( ~D(x,y) | ~H(y) ) ",
+                                                    " ( ( ~B(x,y) | ~C(x,y) ) | A(x) ) ",
+                                                    " B(John,Alice) ",
+                                                    " B(John,Bob) ",
+                                                    " ( ( ~D(x,y) | ~Q(y) ) | C(x,y) ) ",
+                                                    " D(John,Alice) ",
+                                                    " Q(Bob) ",
+                                                    " D(John,Bob) ",
+                                                    " ( ~F(x) | G(x) ) ",
+                                                    " ( ~G(x) | H(x) ) ",
+                                                    " ( ~H(x) | F(x) ) ",
+                                                    " ( ~R(x) | H(x) ) ",
+                                                    " R(Tom) "};
   std::string input_file_name_ = "input.txt";
 };
 
 TEST_F(InputTest, ReadInput) {
-  Input input;
-  input.ReadFrom(input_file_name_);
+  Input input(input_file_name_);
   std::vector<Literal> queries = input.get_queries();
   KnowledgeBase kb = input.get_knowledge_base();
 

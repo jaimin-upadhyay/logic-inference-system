@@ -25,8 +25,7 @@ int main() {
   const std::string output_file_name = "output.txt";
   SetDebugMode(kDEBUG);
   try {
-    Input input;
-    input.ReadFrom(input_file_name);
+    Input input(input_file_name);
     std::cout << "Queries: " << input.get_queries() << "\n";
     std::cout << "Knowledge Base:" << input.get_knowledge_base() << "\n";
   } catch (std::invalid_argument invalid_file_name) {

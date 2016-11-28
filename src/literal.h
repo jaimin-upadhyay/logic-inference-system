@@ -10,16 +10,22 @@
 
 class Literal {
 public:
-  // Creates a query from the input string
-  // Note: Initialization of the constructor initializer list is based on the member's declaration order
+  // Creates a literal from the input string
+  // Language Specification: Initialization of the constructor initializer list is based on the member's declaration order
   Literal(const std::string &input_string) : negation(input_string[0] == '~'),
-                                             predicate(negation ? input_string.substr(1) : input_string) {
+                                             predicate(negation ?
+                                                       input_string.substr(1) :
+                                                       input_string) {
   }
 
-  Literal(bool negation, const Predicate &predicate) : negation(negation), predicate(predicate) {}
+  Literal(bool negation, const Predicate &predicate) : negation(negation),
+                                                       predicate(predicate) {}
 
   std::string to_string() const {
-    return (negation ? "~" : "") + predicate.to_string();
+    std::ostringstream literal_string_stream;
+    literal_string_stream << " " << (negation ? "~" : "")
+                          << predicate.to_string() << " ";
+    return literal_string_stream.str();
   }
 
   bool is_negation() const {
@@ -38,8 +44,8 @@ public:
     Literal::predicate = predicate;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const Literal &query) {
-    return os << query.to_string();
+  friend std::ostream &operator<<(std::ostream &os, const Literal &literal) {
+    return os << literal.to_string();
   }
 
   bool operator==(const Literal &rhs) const {
