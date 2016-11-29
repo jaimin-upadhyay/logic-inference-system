@@ -17,8 +17,9 @@ TEST(KnowledgeBaseTest, IndexTest) {
       "AnimalLover(x)=>Animal(y)=>~Kills(x,y)",
       "~Parent(x,y) | ~Ancestor(y,z) | Ancestor(x,z)",
       "Programmer(x) & Emulator(y) & People(z) & Provide(x,z,y) => Criminal(x)"};
-  std::string expected_kb_string = "Sentences: [ Student(Harry,Hogwarts) ,  ( ~Student(Harry,Hogwarts) | ~Flawless(h) ) ,  ( ( ~Student(Harry,Hogwarts) | ~Flawless(h) ) | Student(h,Hogwarts) ) ,  ( ~Student(Harry,Hogwarts) | Flawless(h) ) ,  ( ( ~Student(Harry,Hogwarts) | ~Flawless(h) ) | Student(h,Hogwarts) ) ,  Name(h,Hermoine) ,  Female(h) ,  Student(h,Hogwarts) ,  ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | Wizard(r) ) ,  ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | Male(r) ) ,  ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | ~Flawless(r) ) ,  ( ~Animal(y) | ~Kills(x,y) ) ,  ( AnimalLover(x) | ~Kills(x,y) ) ,  ( ~Parent(x,y) | ( ~Ancestor(y,z) | Ancestor(x,z) ) ) ,  ( ( ~Programmer(x) | ( ~Emulator(y) | ( ~People(z) | ~Provide(x,z,y) ) ) ) | Criminal(x) ) ]\n"
-      "Index {\n"
+  std::string expected_kb_string = "{\n"
+      "[ Student(Harry,Hogwarts) ,  ( ~Student(Harry,Hogwarts) | ~Flawless(h) ) ,  ( ( ~Student(Harry,Hogwarts) | ~Flawless(h) ) | Student(h,Hogwarts) ) ,  ( ~Student(Harry,Hogwarts) | Flawless(h) ) ,  ( ( ~Student(Harry,Hogwarts) | ~Flawless(h) ) | Student(h,Hogwarts) ) ,  Name(h,Hermoine) ,  Female(h) ,  Student(h,Hogwarts) ,  ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | Wizard(r) ) ,  ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | Male(r) ) ,  ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | ~Flawless(r) ) ,  ( ~Animal(y) | ~Kills(x,y) ) ,  ( AnimalLover(x) | ~Kills(x,y) ) ,  ( ~Parent(x,y) | ( ~Ancestor(y,z) | Ancestor(x,z) ) ) ,  ( ( ~Programmer(x) | ( ~Emulator(y) | ( ~People(z) | ~Provide(x,z,y) ) ) ) | Criminal(x) ) ]\n"
+      "[\n"
       "\tAncestor: ( - : [ y: [ z: [13] ] ] ) ( + : [ x: [ z: [13] ] ] )\n"
       "\tAnimal: ( - : [ y: [11] ] ) ( + :  )\n"
       "\tAnimalLover: ( - : null ) ( + : [ x: [12] ] )\n"
@@ -35,7 +36,8 @@ TEST(KnowledgeBaseTest, IndexTest) {
       "\tProvide: ( - : [ x: [ z: [ y: [14] ] ] ] ) ( + :  )\n"
       "\tStudent: ( - : [ Harry: [ Hogwarts: [1, 2, 3, 4] ], r: [ Hogwarts: [8, 9, 10] ] ] ) ( + : [ Harry: [ Hogwarts: [0] ], h: [ Hogwarts: [2, 4, 7] ] ] )\n"
       "\tWizard: ( - : null ) ( + : [ r: [8] ] )\n"
-      " }\n";
+      "]\n"
+      "}\n";
   KnowledgeBase test_knowledge_base;
   for (int i = 0; i < test_sentence_expressions.size(); i++) {
     std::ostringstream test_sentence_print;

@@ -22,7 +22,7 @@ const unsigned int Sentence::kNumberOfSymbols = 7,
 //  http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#shunting_yard
 // Article describing Shunting Yard algorithm:
 //  http://www.oxfordmathcenter.com/drupal7/node/628
-Sentence::Node *Sentence::ParseSentence(const std::string &input_string) {
+Node *Sentence::ParseSentence(const std::string &input_string) {
   std::invalid_argument invalid_sentence_exception("Invalid sentence: " +
                                                    input_string);
 

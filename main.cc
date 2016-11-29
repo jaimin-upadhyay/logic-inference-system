@@ -27,7 +27,7 @@ int main() {
   try {
     Input input(input_file_name);
     std::cout << "Queries: " << input.get_queries() << "\n";
-    std::cout << "Knowledge Base:" << input.get_knowledge_base() << "\n";
+    std::cout << "Knowledge Base: " << input.get_knowledge_base() << "\n";
   } catch (std::invalid_argument invalid_file_name) {
     std::cout << "Input file couldn't be accessed.";
   }
