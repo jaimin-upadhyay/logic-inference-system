@@ -77,14 +77,14 @@ Sentence::Node *Sentence::ParseSentence(const std::string &input_string) {
                               predicate_regex) &&
             predicate_regex_match.position(0) == 0) {
           Predicate new_predicate(predicate_regex_match[0]);
-          operand_stack.push_back(new PredicateNode(new_predicate));
+          operand_stack.push_back(new LiteralNode(new_predicate));
           input_string_iterator += predicate_regex_match.length(0);
         } else {
           std::ostringstream invalid_char_message;
           invalid_char_message << "Invalid character \'"
                                << *input_string_iterator
-                               << "\' found in sentence \'"
-                               << input_string
+                               << "\' found in sentence \'";
+          invalid_char_message << input_string
                                << "\'.";
           throw std::invalid_argument(invalid_char_message.str());
         }
@@ -157,5 +157,40 @@ void Sentence::ConsumeOperator(std::vector<char> &operator_stack,
         new OperatorNode(new_operator, left_operand, right_operand));
   } else {
     throw fail_exception;
+  }
+}
+
+// Extracts parts of a sentence connected by conjunction.
+void Sentence::GetPartSentences(std::vector<Sentence> &part_sentences) const {
+  Node *traverse_node = nullptr;
+  std::vector<Node *> node_stack;
+  node_stack.push_back(root_);
+  while (!node_stack.empty()) {
+    traverse_node = node_stack.back();
+    node_stack.pop_back();
+    if (traverse_node->get_data_string()[0] == kAnd) {
+      node_stack.push_back(traverse_node->get_left());
+      node_stack.push_back(traverse_node->get_right());
+    } else {
+      part_sentences.push_back(Sentence(traverse_node->copy()));
+    }
+  }
+}
+
+// Extracts all the literals from a sentence.
+void Sentence::GetLiterals(std::vector<Literal> &literals) const {
+  Node *traverse_node = nullptr;
+  std::vector<Node *> node_stack;
+  node_stack.push_back(root_);
+  while (!node_stack.empty()) {
+    traverse_node = node_stack.back();
+    node_stack.pop_back();
+    try {
+      node_stack.push_back(traverse_node->get_left());
+      node_stack.push_back(traverse_node->get_right());
+    } catch (LeafNode::LeafException leaf_exception) {
+      Sentence::LiteralNode *literal_node = (LiteralNode *) traverse_node;
+      literals.push_back(literal_node->get_literal());
+    }
   }
 }

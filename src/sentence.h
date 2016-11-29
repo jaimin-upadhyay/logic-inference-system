@@ -10,6 +10,7 @@
 
 #include "term.h"
 #include "predicate.h"
+#include "literal.h"
 
 class Sentence {
 public:
@@ -69,9 +70,9 @@ public:
 
   class LeafNode : public Node {
   public:
-    class LeafException : public std::runtime_error {
+    class LeafException : public std::invalid_argument {
     public:
-      LeafException() : runtime_error("Leaf nodes do not have children") {}
+      LeafException() : invalid_argument("Leaf nodes do not have children") {}
     };
 
     virtual Node *get_left() const override {
@@ -95,20 +96,22 @@ public:
     }
   };
 
-  class PredicateNode : public LeafNode {
+  class LiteralNode : public LeafNode {
   public:
-    PredicateNode(const Predicate &predicate_) : PredicateNode(predicate_,
-                                                               false) {}
+    LiteralNode(const Predicate &predicate) : LiteralNode(predicate,
+                                                          false) {}
 
-    PredicateNode(const Predicate &predicate_, bool negation_) : predicate_(
-        predicate_), negation_(negation_) {}
+    LiteralNode(const Literal &literal) : literal_(literal) {}
+
+    LiteralNode(const Predicate &predicate, bool negation) : literal_(negation,
+                                                                      predicate) {}
 
     void negate() {
       set_negation(!is_negation());
     }
 
     std::string to_string() const override {
-      return (is_negation() ? " ~" : " ") + predicate_.to_string() + " ";
+      return literal_.to_string();
     }
 
 
@@ -117,29 +120,35 @@ public:
     }
 
     Node *copy() const override {
-      return new PredicateNode(*this);
+      return new LiteralNode(*this);
     }
 
     bool is_negation() const {
-      return negation_;
+      return literal_.is_negation();
     }
 
     void set_negation(bool negation) {
-      PredicateNode::negation_ = negation;
+      literal_.set_negation(negation);
     }
 
     const Predicate &get_predicate() const {
-      return predicate_;
+      return literal_.get_predicate();
     }
 
+    const Literal &get_literal() const {
+      return literal_;
+    }
+
+    void set_literal(const Literal &literal) {
+      literal_ = literal;
+    }
 
     void set_predicate(const Predicate &predicate) {
-      PredicateNode::predicate_ = predicate;
+      literal_.set_predicate(predicate);
     }
 
   protected:
-    bool negation_;
-    Predicate predicate_;
+    Literal literal_;
   };
 
   class OperatorNode : public Node {
@@ -260,6 +269,10 @@ public:
     }
   }
 
+  void GetPartSentences(std::vector<Sentence> &part_sentences) const;
+
+  void GetLiterals(std::vector<Literal> &literals) const;
+
   std::string to_string() const {
     if (root_ != nullptr) {
       return root_->to_string();
@@ -288,6 +301,5 @@ protected:
   static T
   PopAndGet(std::vector<T> &stack, std::invalid_argument fail_exception);
 };
-
 
 #endif //HOMEWORK3_SRC_SENTENCE_H

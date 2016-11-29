@@ -43,8 +43,8 @@ TEST(SentenceTest, ParseValidSentences) {
   };
   for (int i = 0; i < sentence_input_string.size(); i++) {
     std::ostringstream test_sentence_print;
-    test_sentence_print << "Sentence " << i << ": " << sentence_input_string[i]
-                        << "\n";
+    test_sentence_print << "Sentence " << i << ": ";
+    test_sentence_print << sentence_input_string[i] << "\n";
     ASSERT_NO_THROW(Sentence test_sentence(sentence_input_string[i]))
                   << test_sentence_print.str();
     Sentence test_sentence(sentence_input_string[i]);
@@ -93,7 +93,8 @@ TEST(SentenceTest, ParseValidHomeworkSentences) {
   };
   for (int i = 0; i < sentence_input_string.size(); i++) {
     std::ostringstream test_sentence_print;
-    test_sentence_print << "Sentence " << i << ": " << sentence_input_string[i]
+    test_sentence_print << "Sentence " << i << ": ";
+    test_sentence_print << sentence_input_string[i]
                         << "\n";
     ASSERT_NO_THROW(Sentence test_sentence(sentence_input_string[i]))
                   << test_sentence_print.str();

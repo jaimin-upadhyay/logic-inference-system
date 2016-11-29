@@ -37,27 +37,27 @@ public:
     return os;
   }
 
-  bool operator==(const Term &rhs) const {
+  virtual bool operator==(const Term &rhs) const {
     return name_ == rhs.name_;
   }
 
-  bool operator!=(const Term &rhs) const {
+  virtual bool operator!=(const Term &rhs) const {
     return !(rhs == *this);
   }
 
-  bool operator<(const Term &rhs) const {
+  virtual bool operator<(const Term &rhs) const {
     return name_ < rhs.name_;
   }
 
-  bool operator>(const Term &rhs) const {
+  virtual bool operator>(const Term &rhs) const {
     return rhs < *this;
   }
 
-  bool operator<=(const Term &rhs) const {
+  virtual bool operator<=(const Term &rhs) const {
     return !(rhs < *this);
   }
 
-  bool operator>=(const Term &rhs) const {
+  virtual bool operator>=(const Term &rhs) const {
     return !(*this < rhs);
   }
 

@@ -36,6 +36,6 @@ void Input::ReadKnowledgeBase(std::ifstream &input_stream) {
   input_stream >> no_of_sentences;
   input_stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   for (int i = 0; i < no_of_sentences; i++) {
-    knowledge_base_.AddSentence(GetTrimmedLine(input_stream));
+    knowledge_base_.ParseSentenceExpression(GetTrimmedLine(input_stream));
   }
 }
