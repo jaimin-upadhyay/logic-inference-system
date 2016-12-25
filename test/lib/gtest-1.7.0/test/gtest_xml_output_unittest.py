@@ -38,11 +38,10 @@ import errno
 import os
 import re
 import sys
-from xml.dom import minidom, Node
+from xml.dom import minidom
 
 import gtest_test_utils
 import gtest_xml_test_utils
-
 
 GTEST_FILTER_FLAG = '--gtest_filter'
 GTEST_LIST_TESTS_FLAG = '--gtest_list_tests'

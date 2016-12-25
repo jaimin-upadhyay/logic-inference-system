@@ -1,0 +1,5 @@
+2
+Employee(Alice)
+Employee(Bob)
+1
+(Employee(x) | (Employee(x) | Employee(x)))

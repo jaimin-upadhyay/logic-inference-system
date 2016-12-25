@@ -1,0 +1,6 @@
+2
+Sibling(Alice,Bob)
+Sibling(Bob,Alice)
+2
+((Kid(a) | Sibling(a,b)) => Sibling(b,a))
+Kid(x)

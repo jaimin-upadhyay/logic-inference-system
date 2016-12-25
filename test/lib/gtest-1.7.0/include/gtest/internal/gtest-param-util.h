@@ -614,7 +614,8 @@ class ParameterizedTestCaseInfo : public ParameterizedTestCaseInfoBase {
     const scoped_ptr<TestMetaFactoryBase<ParamType> > test_meta_factory;
   };
   typedef ::std::vector<linked_ptr<TestInfo> > TestInfoContainer;
-  // Records data received from INSTANTIATE_TEST_CASE_P macros:
+
+  // Records test_files received from INSTANTIATE_TEST_CASE_P macros:
   //  <Instantiation name, Sequence generator creation function,
   //     Name generator function, Source file, Source line>
   struct InstantiationInfo {

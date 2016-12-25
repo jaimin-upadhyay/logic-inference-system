@@ -1,0 +1,6 @@
+2
+Sibling(Alice,Bob)
+Sibling(Charlie,Denis)
+2
+Parent(x,y)
+Mother(x,y)

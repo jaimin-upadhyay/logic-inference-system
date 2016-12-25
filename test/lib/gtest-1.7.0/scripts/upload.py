@@ -496,37 +496,38 @@ def GetRpcServer(options):
 
 
 def EncodeMultipartFormData(fields, files):
-  """Encode form fields for multipart/form-data.
+    """Encode form fields for multipart/form-test_files.
 
-  Args:
-    fields: A sequence of (name, value) elements for regular form fields.
-    files: A sequence of (name, filename, value) elements for data to be
-           uploaded as files.
-  Returns:
-    (content_type, body) ready for httplib.HTTP instance.
+    Args:
+      fields: A sequence of (name, value) elements for regular form fields.
+      files: A sequence of (name, filename, value) elements for test_files to be
+             uploaded as files.
+    Returns:
+      (content_type, body) ready for httplib.HTTP instance.
 
-  Source:
-    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
-  """
+    Source:
+      http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
+    """
   BOUNDARY = '-M-A-G-I-C---B-O-U-N-D-A-R-Y-'
   CRLF = '\r\n'
   lines = []
   for (key, value) in fields:
     lines.append('--' + BOUNDARY)
-    lines.append('Content-Disposition: form-data; name="%s"' % key)
+    lines.append('Content-Disposition: form-test_files; name="%s"' % key)
     lines.append('')
     lines.append(value)
   for (key, filename, value) in files:
     lines.append('--' + BOUNDARY)
-    lines.append('Content-Disposition: form-data; name="%s"; filename="%s"' %
-             (key, filename))
+    lines.append(
+        'Content-Disposition: form-test_files; name="%s"; filename="%s"' %
+        (key, filename))
     lines.append('Content-Type: %s' % GetContentType(filename))
     lines.append('')
     lines.append(value)
   lines.append('--' + BOUNDARY + '--')
   lines.append('')
   body = CRLF.join(lines)
-  content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
+content_type = 'multipart/form-test_files; boundary=%s' % BOUNDARY
   return content_type, body
 
 
@@ -689,7 +690,7 @@ class VersionControlSystem(object):
       if options.email:
         form_fields.append(("user", options.email))
       ctype, body = EncodeMultipartFormData(form_fields,
-                                            [("data", filename, content)])
+                                            [("test_files", filename, content)])
       response_body = rpc_server.Send(url, body,
                                       content_type=ctype)
       if not response_body.startswith("OK"):
@@ -1193,7 +1194,7 @@ def UploadSeparatePatches(issue, rpc_server, patchset, data, options):
     form_fields = [("filename", patch[0])]
     if not options.download_base:
       form_fields.append(("content_upload", "1"))
-    files = [("data", "data.diff", patch[1])]
+    files = [("test_files", "test_files.diff", patch[1])]
     ctype, body = EncodeMultipartFormData(form_fields, files)
     url = "/%d/upload_patch/%d" % (int(issue), int(patchset))
     print "Uploading patch for " + patch[0]
@@ -1342,7 +1343,7 @@ def RealMain(argv, data=None):
     uploaded_diff_file = []
     form_fields.append(("separate_patches", "1"))
   else:
-    uploaded_diff_file = [("data", "data.diff", data)]
+      uploaded_diff_file = [("test_files", "test_files.diff", data)]
   ctype, body = EncodeMultipartFormData(form_fields, uploaded_diff_file)
   response_body = rpc_server.Send("/upload", body, content_type=ctype)
   patchset = None

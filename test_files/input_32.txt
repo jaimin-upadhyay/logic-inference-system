@@ -1,0 +1,6 @@
+2
+~Teacher(Alice)
+~Student(Bob)
+2
+Incollege(a)
+(~(Incollege(x) & (Teacher(x) | Student(x))))

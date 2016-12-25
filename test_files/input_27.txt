@@ -1,0 +1,5 @@
+2
+Teacher(Alice)
+Student(Bob)
+1
+(Incollege(x) | (Teacher(x) & Student(x)))

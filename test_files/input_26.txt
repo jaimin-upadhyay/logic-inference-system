@@ -1,0 +1,6 @@
+2
+Incollege(Alice)
+Inlibrary(Bob)
+2
+(Incollege(x) & (Teacher(x) | Student(x)))
+(Inlibrary(a) & (Teacher(a) | Student(a)))

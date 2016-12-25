@@ -1,0 +1,5 @@
+2
+Friends(Alice,Bob,Charlie,Diana)
+Friends(Diana,Charlie,Bob,Alice)
+1
+Friends(a,b,c,d)

@@ -1,0 +1,5 @@
+2
+Female(Alice)
+Male(Bob)
+1
+(Female(x) & Male(y))

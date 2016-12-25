@@ -1,0 +1,5 @@
+2
+Classmate(Alice,Bob)
+Classmate(Bob,Alice)
+1
+(Classmate(x,y) => Classmate(y,x))

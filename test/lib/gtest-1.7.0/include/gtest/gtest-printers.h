@@ -511,7 +511,7 @@ inline void PrintTo(char* s, ::std::ostream* os) {
   PrintTo(ImplicitCast_<const char*>(s), os);
 }
 
-// signed/unsigned char is often used for representing binary data, so
+// signed/unsigned char is often used for representing binary test_files, so
 // we print pointers to it as void* to be safe.
 inline void PrintTo(const signed char* s, ::std::ostream* os) {
   PrintTo(ImplicitCast_<const void*>(s), os);

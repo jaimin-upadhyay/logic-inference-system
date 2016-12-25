@@ -1679,7 +1679,7 @@ class GTEST_API_ AssertHelper {
   void operator=(const Message& message) const;
 
  private:
-  // We put our data in a struct so that the size of the AssertHelper class can
+  // We put our test_files in a struct so that the size of the AssertHelper class can
   // be as small as possible.  This is important because gcc is incapable of
   // re-using stack space even for temporary variables, so every EXPECT_EQ
   // reserves stack space for another AssertHelper.
@@ -1749,7 +1749,7 @@ class WithParamInterface {
 
   // The current parameter value. Is also available in the test fixture's
   // constructor. This member function is non-static, even though it only
-  // references static data, to reduce the opportunity for incorrect uses
+  // references static test_files, to reduce the opportunity for incorrect uses
   // like writing 'WithParamInterface<bool>::GetParam()' for a test that
   // uses a fixture whose parameter type is int.
   const ParamType& GetParam() const {
@@ -1801,7 +1801,7 @@ class TestWithParam : public Test, public WithParamInterface<T> {
 // FAIL and ASSERT_* are similar to ADD_FAILURE and EXPECT_*, except
 // that they will also abort the current function on failure.  People
 // usually want the fail-fast behavior of FAIL and ASSERT_*, but those
-// writing data-driven tests often find themselves using ADD_FAILURE
+// writing test_files-driven tests often find themselves using ADD_FAILURE
 // and EXPECT_* more.
 
 // Generates a nonfatal failure with a generic message.

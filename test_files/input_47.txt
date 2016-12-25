@@ -1,0 +1,7 @@
+2
+Daughter(Alice)
+Son(Bob)
+3
+(Sibling(a,b) => Sibling(b,a))
+Daughter(x)
+Son(y)

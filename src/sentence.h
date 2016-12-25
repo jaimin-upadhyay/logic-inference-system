@@ -19,24 +19,23 @@ public:
     kAnd = '&', kOr = '|'
   };
 
-  class LiteralNode : public LeafNode {
+  class LiteralNode : public Literal, public LeafNode {
   public:
-    LiteralNode(const Predicate &predicate) : LiteralNode(predicate,
-                                                          false) {}
+    LiteralNode(const Literal &literal) : Literal(literal) {}
 
-    LiteralNode(const Literal &literal) : literal_(literal) {}
-
-    LiteralNode(const Predicate &predicate, bool negation) : literal_(negation,
-                                                                      predicate) {}
+    LiteralNode(const Predicate &predicate, bool negation = false) : Literal(
+        negation,
+        predicate) {}
 
     void negate() {
       set_negation(!is_negation());
     }
 
     std::string to_string() const override {
-      return literal_.to_string();
+      std::ostringstream literal_node_stream;
+      literal_node_stream << *this;
+      return literal_node_stream.str();
     }
-
 
     std::string get_data_string() const override {
       return to_string();
@@ -46,32 +45,10 @@ public:
       return new LiteralNode(*this);
     }
 
-    bool is_negation() const {
-      return literal_.is_negation();
+    friend std::ostream &operator<<(std::ostream &os, const LiteralNode &node) {
+      os << static_cast<const Literal &>(node);
+      return os;
     }
-
-    void set_negation(bool negation) {
-      literal_.set_negation(negation);
-    }
-
-    const Predicate &get_predicate() const {
-      return literal_.get_predicate();
-    }
-
-    const Literal &get_literal() const {
-      return literal_;
-    }
-
-    void set_literal(const Literal &literal) {
-      literal_ = literal;
-    }
-
-    void set_predicate(const Predicate &predicate) {
-      literal_.set_predicate(predicate);
-    }
-
-  protected:
-    Literal literal_;
   };
 
   class OperatorNode : public Node {
@@ -132,11 +109,13 @@ public:
       if (right_ != nullptr) {
         right_->negate();
       }
+      EnsureConjunctiveNormalFormal(left_, right_);
     }
 
     std::string to_string() const override {
-      return " (" + left_->to_string() + (operator_ == kAnd ? "&" : "|") +
-             right_->to_string() + ") ";
+      std::ostringstream operator_node_string_stream;
+      operator_node_string_stream << *this;
+      return operator_node_string_stream.str();
     }
 
     std::string get_data_string() const override {
@@ -149,10 +128,6 @@ public:
 
     Operator get_operator() const {
       return operator_;
-    }
-
-    void set_operator(Operator operator_) {
-      OperatorNode::operator_ = operator_;
     }
 
     void set_left(Node *left_value) override {
@@ -171,11 +146,16 @@ public:
       }
     }
 
+    friend std::ostream &
+    operator<<(std::ostream &os, const OperatorNode &node) {
+      os << " (" << *node.left_ << (node.operator_ == kAnd ? "&" : "|") <<
+         *node.right_ << ") ";
+      return os;
+    }
+
   protected:
     Operator operator_;
   };
-
-  Sentence(Node *root) : root_(root) {}
 
   Sentence(const std::string &input_string) {
     root_ = ParseSentence(input_string);
@@ -192,9 +172,9 @@ public:
     }
   }
 
-  void GetPartSentences(std::vector<Sentence> &part_sentences) const;
+  void
+  GetPartSentences(std::vector<std::set<Literal>> &part_sentences) const;
 
-  void GetLiterals(std::vector<Literal> &literals) const;
 
   std::string to_string() const {
     if (root_ != nullptr) {
@@ -207,6 +187,30 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Sentence &sentence) {
     os << sentence.to_string();
     return os;
+  }
+
+  bool operator==(const Sentence &rhs) const {
+    return to_string() == rhs.to_string();
+  }
+
+  bool operator!=(const Sentence &rhs) const {
+    return !(rhs == *this);
+  }
+
+  bool operator<(const Sentence &rhs) const {
+    return root_ < rhs.root_;
+  }
+
+  bool operator>(const Sentence &rhs) const {
+    return rhs < *this;
+  }
+
+  bool operator<=(const Sentence &rhs) const {
+    return !(rhs < *this);
+  }
+
+  bool operator>=(const Sentence &rhs) const {
+    return !(*this < rhs);
   }
 
 protected:
@@ -223,6 +227,8 @@ protected:
   template<typename T>
   static T
   PopAndGet(std::vector<T> &stack, std::invalid_argument fail_exception);
+
+  void GetLiterals(Node *traverse_root, std::set<Literal> &literals) const;
 };
 
 #endif //HOMEWORK3_SRC_SENTENCE_H

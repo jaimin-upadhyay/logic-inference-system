@@ -21,7 +21,9 @@ TEST(SentenceTest, ParseValidSentences) {
       "Student(r,Hogwarts)&Name(r,Ron)=>~Flawless(r)&Male(r)&Wizard(r)",
       "AnimalLover(x)=>Animal(y)=>~Kills(x,y)",
       "~Parent(x,y) | ~Ancestor(y,z) | Ancestor(x,z)",
-      "Programmer(x) & Emulator(y) & People(z) & Provide(x,z,y) => Criminal(x)"};
+      "Programmer(x) & Emulator(y) & People(z) & Provide(x,z,y) => Criminal(x)",
+      "(~Work(j) & AtHome(j)) | Fail(j, Exam)",
+      "(~(Incollege(x) | (Teacher(x) & Student(x))))"};
   std::vector<std::string> expected_sentence_representation = {
       " Student(Harry,Hogwarts) ",
       " ~Student(Harry,Hogwarts) ",
@@ -39,9 +41,10 @@ TEST(SentenceTest, ParseValidSentences) {
       " ( ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | ~Flawless(r) ) & ( ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | Male(r) ) & ( ( ~Student(r,Hogwarts) | ~Name(r,Ron) ) | Wizard(r) ) ) ) ",
       " ( ( AnimalLover(x) | ~Kills(x,y) ) & ( ~Animal(y) | ~Kills(x,y) ) ) ",
       " ( ~Parent(x,y) | ( ~Ancestor(y,z) | Ancestor(x,z) ) ) ",
-      " ( ( ~Programmer(x) | ( ~Emulator(y) | ( ~People(z) | ~Provide(x,z,y) ) ) ) | Criminal(x) ) "
-  };
-  for (int i = 0; i < sentence_input_string.size(); i++) {
+      " ( ( ~Programmer(x) | ( ~Emulator(y) | ( ~People(z) | ~Provide(x,z,y) ) ) ) | Criminal(x) ) ",
+      " ( ( ~Work(j) | Fail(j, Exam) ) & ( AtHome(j) | Fail(j, Exam) ) ) ",
+      " ( ( ( ~Incollege(x) | ~Incollege(x) ) & ( ~Incollege(x) | ~Student(x) ) ) & ( ( ~Teacher(x) | ~Incollege(x) ) & ( ~Teacher(x) | ~Student(x) ) ) ) "};
+  for (int i = 18; i < sentence_input_string.size(); i++) {
     std::ostringstream test_sentence_print;
     test_sentence_print << "Sentence " << i << ": ";
     test_sentence_print << sentence_input_string[i] << "\n";

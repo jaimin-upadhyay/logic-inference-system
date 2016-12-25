@@ -2029,7 +2029,7 @@ class ThreadLocalValueHolderBase {
   virtual ~ThreadLocalValueHolderBase() {}
 };
 
-// Called by pthread to delete thread-local data stored by
+// Called by pthread to delete thread-local test_files stored by
 // pthread_setspecific().
 extern "C" inline void DeleteThreadLocalValue(void* value_holder) {
   delete static_cast<ThreadLocalValueHolderBase*>(value_holder);

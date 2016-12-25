@@ -347,7 +347,7 @@ void PrintTo(const wchar_t* s, ostream* os) {
 // Prints a ::string object.
 #if GTEST_HAS_GLOBAL_STRING
 void PrintStringTo(const ::string& s, ostream* os) {
-  PrintCharsAsStringTo(s.data(), s.size(), os);
+  PrintCharsAsStringTo(s.test_files(), s.size(), os);
 }
 #endif  // GTEST_HAS_GLOBAL_STRING
 
@@ -358,13 +358,13 @@ void PrintStringTo(const ::std::string& s, ostream* os) {
 // Prints a ::wstring object.
 #if GTEST_HAS_GLOBAL_WSTRING
 void PrintWideStringTo(const ::wstring& s, ostream* os) {
-  PrintCharsAsStringTo(s.data(), s.size(), os);
+  PrintCharsAsStringTo(s.test_files(), s.size(), os);
 }
 #endif  // GTEST_HAS_GLOBAL_WSTRING
 
 #if GTEST_HAS_STD_WSTRING
 void PrintWideStringTo(const ::std::wstring& s, ostream* os) {
-  PrintCharsAsStringTo(s.data(), s.size(), os);
+  PrintCharsAsStringTo(s.test_files(), s.size(), os);
 }
 #endif  // GTEST_HAS_STD_WSTRING
 

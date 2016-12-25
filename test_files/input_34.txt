@@ -1,0 +1,7 @@
+2
+Teacher(Alice)
+Student(Bob)
+3
+(Incollege(x) => Teacher(x))
+(Incollege(y) => Student(y))
+Incollege(z)

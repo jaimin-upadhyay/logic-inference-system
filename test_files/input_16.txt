@@ -1,0 +1,6 @@
+2
+Ancestor(Alice,Bob)
+Ancestor(Alice,Denis)
+2
+Parent(Alice,x)
+(Ancestor(Alice,y) | (~Parent(x,y)))

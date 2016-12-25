@@ -52,7 +52,7 @@
 #include "gtest/gtest.h"
 #include "gtest/gtest-spi.h"
 
-// A user-defined data type.
+// A user-defined test_files type.
 struct Bool {
   explicit Bool(int val) : value(val != 0) {}
 

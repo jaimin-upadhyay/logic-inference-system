@@ -38,8 +38,8 @@ Google Test) with different environments and command line flags.
 __author__ = 'wan@google.com (Zhanyong Wan)'
 
 import os
-import gtest_test_utils
 
+import gtest_test_utils
 
 # Constants.
 

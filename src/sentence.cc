@@ -2,6 +2,7 @@
 // Created by Jaimin Upadhyay on 11/19/2016.
 //
 
+#include <set>
 #include "sentence.h"
 
 // Symbols are stored in indexes equal to their precedence.
@@ -80,13 +81,10 @@ Node *Sentence::ParseSentence(const std::string &input_string) {
           operand_stack.push_back(new LiteralNode(new_predicate));
           input_string_iterator += predicate_regex_match.length(0);
         } else {
-          std::ostringstream invalid_char_message;
-          invalid_char_message << "Invalid character \'"
-                               << *input_string_iterator
-                               << "\' found in sentence \'";
-          invalid_char_message << input_string
-                               << "\'.";
-          throw std::invalid_argument(invalid_char_message.str());
+          std::string invalid_char_message = "Invalid \'";
+          invalid_char_message.push_back(*input_string_iterator);
+          invalid_char_message += "\' found in \'" + input_string + "\'.";
+          throw std::invalid_argument(invalid_char_message);
         }
       }
     }
@@ -161,7 +159,8 @@ void Sentence::ConsumeOperator(std::vector<char> &operator_stack,
 }
 
 // Extracts parts of a sentence connected by conjunction.
-void Sentence::GetPartSentences(std::vector<Sentence> &part_sentences) const {
+void Sentence::GetPartSentences(
+    std::vector<std::set<Literal>> &part_sentences) const {
   Node *traverse_node = nullptr;
   std::vector<Node *> node_stack;
   node_stack.push_back(root_);
@@ -172,25 +171,30 @@ void Sentence::GetPartSentences(std::vector<Sentence> &part_sentences) const {
       node_stack.push_back(traverse_node->get_left());
       node_stack.push_back(traverse_node->get_right());
     } else {
-      part_sentences.push_back(Sentence(traverse_node->copy()));
+      std::set<Literal> part_sentence_literals;
+      GetLiterals(traverse_node, part_sentence_literals);
+      part_sentences.push_back(part_sentence_literals);
     }
   }
 }
 
 // Extracts all the literals from a sentence.
-void Sentence::GetLiterals(std::vector<Literal> &literals) const {
+void Sentence::GetLiterals(Node *traverse_root,
+                           std::set<Literal> &literals) const {
   Node *traverse_node = nullptr;
   std::vector<Node *> node_stack;
-  node_stack.push_back(root_);
+  node_stack.push_back(traverse_root);
   while (!node_stack.empty()) {
     traverse_node = node_stack.back();
     node_stack.pop_back();
     try {
-      node_stack.push_back(traverse_node->get_left());
-      node_stack.push_back(traverse_node->get_right());
+      if (traverse_node->get_data_string()[0] != kAnd) {
+        node_stack.push_back(traverse_node->get_left());
+        node_stack.push_back(traverse_node->get_right());
+      }
     } catch (LeafNode::LeafException leaf_exception) {
-      Sentence::LiteralNode *literal_node = (LiteralNode *) traverse_node;
-      literals.push_back(literal_node->get_literal());
+      LiteralNode *literal_node = (LiteralNode *) traverse_node;
+      literals.insert(*literal_node);
     }
   }
 }

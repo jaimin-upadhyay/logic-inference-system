@@ -41,8 +41,8 @@ __author__ = 'wan@google.com (Zhanyong Wan)'
 
 import os
 import re
-import gtest_test_utils
 
+import gtest_test_utils
 
 IS_LINUX = os.name == 'posix' and os.uname()[0] == 'Linux'
 IS_WINDOWS = os.name == 'nt'

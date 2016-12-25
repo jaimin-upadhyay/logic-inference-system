@@ -44,11 +44,11 @@ class Widget {
   Widget(int number, const std::string& name);
   ~Widget();
 
-  // Public accessors to number data
+  // Public accessors to number test_files
   float GetFloatValue() const;
   int GetIntValue() const;
 
-  // Public accessors to the string data
+  // Public accessors to the string test_files
   std::string GetStringValue() const;
   void GetCharPtrValue(char* buffer, size_t max_size) const;
 

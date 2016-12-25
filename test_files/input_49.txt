@@ -1,0 +1,5 @@
+2
+Student(Alice)
+Student(Bob)
+1
+(Student(a) & (Student(b) & (Student(c) & (Student(d) & (Student(e) & Student(f))))))

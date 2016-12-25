@@ -1,0 +1,7 @@
+2
+Employee(Alice)
+Employee(Bob)
+3
+(Student(x) | Employee(x))
+((~Student(y)) |  (~Earns(y)))
+(Employee(z) => Earns(z))

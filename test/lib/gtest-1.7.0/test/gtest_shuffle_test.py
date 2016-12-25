@@ -33,6 +33,7 @@
 __author__ = 'wan@google.com (Zhanyong Wan)'
 
 import os
+
 import gtest_test_utils
 
 # Command to run the gtest_shuffle_test_ program.

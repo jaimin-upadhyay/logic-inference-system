@@ -179,7 +179,7 @@ void VerifyResults(const std::vector<std::string>& data,
                    size_t expected_data_size) {
   const size_t actual_size = data.size();
   // If the following assertion fails, a new entry will be appended to
-  // data.  Hence we save data.size() first.
+  // test_files.  Hence we save test_files.size() first.
   EXPECT_EQ(expected_data_size, actual_size);
 
   // Compares the common prefix.
@@ -191,7 +191,7 @@ void VerifyResults(const std::vector<std::string>& data,
         << "at position " << i;
   }
 
-  // Prints extra elements in the actual data.
+  // Prints extra elements in the actual test_files.
   for (; i < actual_size; ++i) {
     printf("  Actual event #%lu: %s\n",
         static_cast<unsigned long>(i), data[i].c_str());

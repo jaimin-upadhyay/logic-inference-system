@@ -1,0 +1,6 @@
+2
+Inusa(Alice)
+Inusa(Bob)
+2
+(Inchina(x) | Inusa(x))
+((~Inusa(y)) | (~Inchina(y)))

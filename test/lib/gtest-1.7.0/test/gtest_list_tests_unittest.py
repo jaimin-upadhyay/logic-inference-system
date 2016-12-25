@@ -39,9 +39,9 @@ Google Test) the command line flags.
 
 __author__ = 'phanna@google.com (Patrick Hanna)'
 
-import gtest_test_utils
 import re
 
+import gtest_test_utils
 
 # Constants.
 

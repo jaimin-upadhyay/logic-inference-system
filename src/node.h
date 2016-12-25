@@ -66,6 +66,7 @@ public:
 
   virtual Node *get_left() const override {
     handle_child_operations();
+    return nullptr;
   }
 
   virtual void set_left(Node *left) override {
@@ -74,6 +75,7 @@ public:
 
   virtual Node *get_right() const override {
     handle_child_operations();
+    return nullptr;
   }
 
   virtual void set_right(Node *right) override {

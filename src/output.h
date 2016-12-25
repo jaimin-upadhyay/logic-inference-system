@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
 #include <iterator>
 
 // Facilitate easy output of vectors by overloading "<<" operator.
@@ -28,6 +29,20 @@ operator<<(std::ostream &output_stream, std::vector<T> const &generic_vector) {
   copy(generic_vector.begin(), generic_vector.end() - 1,
        std::ostream_iterator<T>(output_stream, ", "));
   output_stream << generic_vector.back() << "]";
+  return output_stream;
+}
+
+template<class T>
+std::ostream &
+operator<<(std::ostream &output_stream,
+           std::set<T> const &generic_set) {
+  output_stream << "(";
+  typename std::set<T>::const_iterator set_iterator = generic_set.begin();
+  output_stream << *set_iterator;
+  for (set_iterator++; set_iterator != generic_set.end(); set_iterator++) {
+    output_stream << ", " << *set_iterator;
+  }
+  output_stream << ")";
   return output_stream;
 }
 

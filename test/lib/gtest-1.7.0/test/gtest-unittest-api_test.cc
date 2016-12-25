@@ -30,7 +30,7 @@
 //
 // The Google C++ Testing Framework (Google Test)
 //
-// This file contains tests verifying correctness of data provided via
+// This file contains tests verifying correctness of test_files provided via
 // UnitTest's public methods.
 
 #include "gtest/gtest.h"

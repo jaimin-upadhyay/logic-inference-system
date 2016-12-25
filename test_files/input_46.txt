@@ -1,0 +1,6 @@
+2
+Inschool(Alice)
+Inschool(Bob)
+2
+(Schoolmate(x,y) => Inschool(x))
+(Schoolmate(a,b) => Inschool(b))

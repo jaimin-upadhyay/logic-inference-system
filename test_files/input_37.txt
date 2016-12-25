@@ -1,0 +1,6 @@
+2
+Inusa(Alice)
+Inusa(Bob)
+2
+(Inla(x) => Inusa(x))
+(Inusa(y) => Inla(y))

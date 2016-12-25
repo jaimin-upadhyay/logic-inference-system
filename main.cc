@@ -6,30 +6,15 @@
 //============================================================================
 
 #include <iostream>
-#include "input.h"
-
-// Used to toggle debugging output to cout stream
-const bool kDEBUG = true;
-
-// Toggles the debugging output to cout stream based on the parameter value
-void SetDebugMode(const bool debug) {
-  if (debug) {
-    std::cout.clear();
-  } else {
-    std::cout.setstate(std::ios_base::failbit);
-  }
-}
+#include <knowledge_base.h>
 
 int main() {
   const std::string input_file_name = "input.txt";
   const std::string output_file_name = "output.txt";
-  SetDebugMode(kDEBUG);
   try {
-    Input input(input_file_name);
-    std::cout << "Queries: " << input.get_queries() << "\n";
-    std::cout << "Knowledge Base: " << input.get_knowledge_base() << "\n";
-  } catch (std::invalid_argument invalid_file_name) {
-    std::cout << "Input file couldn't be accessed.";
+    KnowledgeBase::Query(input_file_name, output_file_name);
+  } catch (std::invalid_argument e) {
+    std::cout << e.what() << std::endl;
   }
   return 0;
 }

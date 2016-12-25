@@ -34,10 +34,9 @@
 __author__ = 'eefacm@gmail.com (Sean Mcafee)'
 
 import re
-from xml.dom import minidom, Node
+from xml.dom import Node
 
 import gtest_test_utils
-
 
 GTEST_OUTPUT_FLAG         = '--gtest_output'
 GTEST_DEFAULT_OUTPUT_FILE = 'test_detail.xml'

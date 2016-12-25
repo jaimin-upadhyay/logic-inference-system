@@ -437,7 +437,7 @@ void DeathTestImpl::ReadAndInterpretStatusByte() {
   char flag;
   int bytes_read;
 
-  // The read() here blocks until data is available (signifying the
+  // The read() here blocks until test_files is available (signifying the
   // failure of the death test) or until the pipe is closed (signifying
   // its success), so it's okay to call this in the parent before
   // the child process has exited.
@@ -480,7 +480,7 @@ void DeathTestImpl::ReadAndInterpretStatusByte() {
 // calls _exit(1).
 void DeathTestImpl::Abort(AbortReason reason) {
   // The parent process considers the death test to be a failure if
-  // it finds any data in our pipe.  So, here we write a single flag byte
+  // it finds any test_files in our pipe.  So, here we write a single flag byte
   // to the pipe, then exit.
   const char status_ch =
       reason == TEST_DID_NOT_DIE ? kDeathTestLived :
@@ -519,7 +519,7 @@ static ::std::string FormatDeathTestOutput(const ::std::string& output) {
 // Assesses the success or failure of a death test, using both private
 // members which have previously been set, and one argument:
 //
-// Private data members:
+// Private test_files members:
 //   outcome:  An enumeration describing how the death test
 //             concluded: DIED, LIVED, THREW, or RETURNED.  The death test
 //             fails in the latter three cases.
@@ -646,7 +646,7 @@ class WindowsDeathTest : public DeathTestImpl {
 
 // Waits for the child in a death test to exit, returning its exit
 // status, or 0 if no child process exists.  As a side effect, sets the
-// outcome data member.
+// outcome test_files member.
 int WindowsDeathTest::Wait() {
   if (!spawned())
     return 0;
@@ -806,7 +806,7 @@ ForkingDeathTest::ForkingDeathTest(const char* a_statement, const RE* a_regex)
 
 // Waits for the child in a death test to exit, returning its exit
 // status, or 0 if no child process exists.  As a side effect, sets the
-// outcome data member.
+// outcome test_files member.
 int ForkingDeathTest::Wait() {
   if (!spawned())
     return 0;

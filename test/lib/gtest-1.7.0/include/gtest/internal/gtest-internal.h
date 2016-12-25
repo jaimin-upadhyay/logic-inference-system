@@ -365,7 +365,7 @@ class FloatingPoint {
   }
 
  private:
-  // The data type used to store the actual floating-point number.
+  // The test_files type used to store the actual floating-point number.
   union FloatingPointUnion {
     RawType value_;  // The raw floating-point number.
     Bits bits_;      // The bits that represent the number.
@@ -885,7 +885,7 @@ class ImplicitlyConvertible {
   static const bool value = __is_convertible(From, To);
 #else
   // MSVC warns about implicitly converting from double to int for
-  // possible loss of data, so we need to temporarily disable the
+  // possible loss of test_files, so we need to temporarily disable the
   // warning.
   GTEST_DISABLE_MSC_WARNINGS_PUSH_(4244)
   static const bool value =

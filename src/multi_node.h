@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 #include <sstream>
-#include <vector>
+#include <list>
 #include <iterator>
 
 
@@ -73,19 +73,22 @@ public:
 
 // Node which uses a vector to store multiple values.
 template<typename T>
-class VectorMultiNode : public std::vector<T>, public MultiNode {
+class ListMultiNode : public std::list<T>, public MultiNode {
 public:
   std::string to_string() const override {
     std::ostringstream node_string_stream;
-    node_string_stream << "[";
-    copy(VectorMultiNode::begin(), VectorMultiNode::end() - 1,
-         std::ostream_iterator<T>(node_string_stream, ", "));
-    node_string_stream << VectorMultiNode::back() << "]";
+    typename std::list<T>::const_iterator list_iterator = ListMultiNode::begin();
+    node_string_stream << "[" << *list_iterator;
+    for (list_iterator++; list_iterator !=
+                          ListMultiNode::end(); list_iterator++) {
+      node_string_stream << ", " << *list_iterator;
+    }
+    node_string_stream << "]";
     return node_string_stream.str();
   }
 
   friend std::ostream &
-  operator<<(std::ostream &output_stream, const VectorMultiNode &node) {
+  operator<<(std::ostream &output_stream, const ListMultiNode &node) {
     output_stream << node.to_string();
     return output_stream;
   }

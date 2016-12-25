@@ -44,8 +44,8 @@
 // <TechnicalDetails>
 //
 // The tests share the test fixture in the sense of code sharing, not
-// data sharing.  Each test is given its own fresh copy of the
-// fixture.  You cannot expect the data modified by one test to be
+// test_files sharing.  Each test is given its own fresh copy of the
+// fixture.  You cannot expect the test_files modified by one test to be
 // passed on to another test, which is a bad idea.
 //
 // The reason for this design is that tests should be independent and
@@ -121,7 +121,7 @@ class QueueTest : public testing::Test {
 
 // Tests the default c'tor.
 TEST_F(QueueTest, DefaultConstructor) {
-  // You can access data in the test fixture here.
+  // You can access test_files in the test fixture here.
   EXPECT_EQ(0u, q0_.Size());
 }
 

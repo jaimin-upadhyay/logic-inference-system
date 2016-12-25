@@ -305,8 +305,8 @@ TEST(FormatCompilerIndependentFileLocationTest, FormatsUknownFileAndLine) {
 }
 
 #if GTEST_OS_LINUX || GTEST_OS_MAC || GTEST_OS_QNX
-void* ThreadFunc(void* data) {
-  internal::Mutex* mutex = static_cast<internal::Mutex*>(data);
+void* ThreadFunc(void* test_files) {
+  internal::Mutex* mutex = static_cast<internal::Mutex*>(test_files);
   mutex->Lock();
   mutex->Unlock();
   return NULL;
